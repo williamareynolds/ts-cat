@@ -5,3 +5,12 @@
 
 A static-land and fantasy-land compliant library containing interfaces for common type-classes and
 common instances of them.
+
+## Documentation
+
+[Theory and Usage][theory-doc]
+
+[API Docs][api-doc]
+
+[api-doc]: https://williamareynolds.github.io/ts-cat/
+[theory-doc]: https://github.com/williamareynolds/ts-cat/wiki

@@ -1,8 +1,8 @@
-import DummyClass from '../src/ts-cat'
-
 /**
  * Dummy test
  */
+import DummyClass from '../src/ts-cat'
+
 describe('Dummy test', () => {
   it('works if true is truthy', () => {
     expect(true).toBeTruthy()
