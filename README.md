@@ -9,6 +9,14 @@ common instances of them.
 This library is currently in very active development. Be aware that changes will be frequent, but
 that breaking changes will always incur a major version change.
 
+## Limitations
+
+Be aware that Typescript simply does not support some typing behaviors that would make some things
+work as expected. The most serious of these issues is that static methods cannot be specified in
+interfaces. This means that a fantasy-land compliant interface for Applicative cannot be properly
+created because `of` can't be enforced as a class method. There is currently an open issue for this
+[here][ts-static-interface].
+
 ## Documentation
 
 [Theory and Usage][theory-doc]
@@ -17,3 +25,4 @@ that breaking changes will always incur a major version change.
 
 [api-doc]: https://williamareynolds.github.io/ts-cat/
 [theory-doc]: https://github.com/williamareynolds/ts-cat/wiki
+[ts-static-interface]: https://github.com/microsoft/TypeScript/issues/33892
