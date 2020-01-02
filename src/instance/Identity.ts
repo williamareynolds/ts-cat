@@ -2,21 +2,14 @@ import { Monad1, MonadS1 } from '../Monad'
 
 declare module '../HKT' {
   interface URItoHKT<A> {
-    Identity: Identity<A>
+    Identity: _Identity<A>
   }
 }
 
 export const URI = 'Identity'
 export type URI = typeof URI
 
-/**
- * A simple wrapper around a value which provides no special behavior.
- *
- * Identity is valuable in cases where some function expects an instance of Functor, Monad, or
- * otherwise, but the data to pass needs no special behavior (as may be provided by something like
- * Maybe).
- */
-export class Identity<A> implements Monad1<URI, A> {
+class _Identity<A> implements Monad1<URI, A> {
   /** @param value A value of any type to wrap in Identity */
   constructor(readonly value: A) {}
 
@@ -25,7 +18,7 @@ export class Identity<A> implements Monad1<URI, A> {
    *
    * @param f A unary function.
    */
-  map<B>(f: (a: A) => B): Identity<B> {
+  map<B>(f: (a: A) => B): _Identity<B> {
     return identity.of(f(this.value))
   }
 
@@ -34,7 +27,7 @@ export class Identity<A> implements Monad1<URI, A> {
    *
    * @param fab An Identity wrapping a unary function.
    */
-  ap<B>(fab: Identity<(a: A) => B>): Identity<B> {
+  ap<B>(fab: _Identity<(a: A) => B>): _Identity<B> {
     return identity.of(fab.value(this.value))
   }
 
@@ -43,18 +36,27 @@ export class Identity<A> implements Monad1<URI, A> {
    *
    * @param fa A function which returns an Identity.
    */
-  chain<B>(fa: (a: A) => Identity<B>): Identity<B> {
+  chain<B>(fa: (a: A) => _Identity<B>): _Identity<B> {
     return fa(this.value)
   }
 }
+
+/**
+ * A simple wrapper around a value which provides no special behavior.
+ *
+ * Identity is valuable in cases where some function expects an instance of Functor, Monad, or
+ * otherwise, but the data to pass needs no special behavior (as may be provided by something like
+ * Maybe).
+ */
+export type Identity<A> = _Identity<A>
 
 /**
  * Create a new Identity object.
  *
  * @param a Any value to wrap with Identity.
  */
-const of = <A>(a: A): Identity<A> => {
-  return new Identity(a)
+const of = <A>(a: A): _Identity<A> => {
+  return new _Identity(a)
 }
 
 /** A common alias of [[of]] */
@@ -66,7 +68,7 @@ const pure = of
  * @param f A unary function.
  * @param fa An Identity containing the value to which the function will be applied.
  */
-const map = <A, B>(f: (a: A) => B, fa: Identity<A>): Identity<B> => {
+const map = <A, B>(f: (a: A) => B, fa: _Identity<A>): _Identity<B> => {
   return fa.map(f)
 }
 
@@ -76,7 +78,7 @@ const map = <A, B>(f: (a: A) => B, fa: Identity<A>): Identity<B> => {
  * @param fab A unary function wrapped by Identity.
  * @param fa An identity containing the value to which the function will be applied.
  */
-const ap = <A, B>(fab: Identity<(a: A) => B>, fa: Identity<A>): Identity<B> => {
+const ap = <A, B>(fab: _Identity<(a: A) => B>, fa: _Identity<A>): _Identity<B> => {
   return fa.ap(fab)
 }
 
@@ -86,7 +88,7 @@ const ap = <A, B>(fab: Identity<(a: A) => B>, fa: Identity<A>): Identity<B> => {
  * @param fa A unary function which returns an Identity
  * @param ma An identity containing the value to which the function will be applied.
  */
-const chain = <A, B>(fa: (a: A) => Identity<B>, ma: Identity<A>): Identity<B> => {
+const chain = <A, B>(fa: (a: A) => _Identity<B>, ma: _Identity<A>): _Identity<B> => {
   return ma.chain(fa)
 }
 
