@@ -6,6 +6,9 @@
 A static-land and fantasy-land compliant library containing interfaces for common type-classes and
 common instances of them.
 
+This library is currently in very active development. Be aware that changes will be frequent, but
+that breaking changes will always incur a major version change.
+
 ## Documentation
 
 [Theory and Usage][theory-doc]
