@@ -93,6 +93,7 @@
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "cz-conventional-changelog": "^2.1.0",
+    "fast-check": "^1.21.0",
     "husky": "^1.0.1",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
