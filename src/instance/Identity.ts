@@ -31,6 +31,10 @@ export class Identity<A> implements Monad1<URI, A> {
     return new Identity(a)
   }
 
+  toString(): String {
+    return `Identity ${String(this.value)}`
+  }
+
   /**
    * Apply a function to the value wrapped by Identity.
    *
@@ -110,7 +114,7 @@ const chain = <A, B>(fa: (a: A) => Identity<B>, ma: Identity<A>): Identity<B> =>
 }
 
 /**
- * The set of static identity functions which can be applied with Identity
+ * The set of static functions which can be applied with Identity
  *
  * @category Identity
  */
