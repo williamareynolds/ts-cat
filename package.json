@@ -24,17 +24,14 @@
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme default --mode file src",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
-    "test:watch": "jest --coverage --watch",
-    "test:prod": "yarn lint && yarn test -- --no-cache",
+    "test.watch": "jest --coverage --watch",
+    "test.prod": "yarn lint && yarn test --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "travis-deploy-once": "travis-deploy-once",
-    "prepush": "npm run test:prod && npm run build",
-    "commitmsg": "commitlint -E HUSKY_GIT_PARAMS"
+    "travis-deploy-once": "travis-deploy-once"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -48,6 +45,15 @@
     }
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "ignoreCodes": [
+            2345
+          ]
+        }
+      }
+    },
     "transform": {
       ".(ts|tsx)": "ts-jest"
     },
@@ -71,7 +77,7 @@
       }
     },
     "collectCoverageFrom": [
-      "src/*.{js,ts}"
+      "src/**/*.{js,ts}"
     ]
   },
   "prettier": {
@@ -119,5 +125,12 @@
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.12.0",
     "typescript": "^3.7"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test.prod && npm run build"
+    }
   }
 }

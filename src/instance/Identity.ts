@@ -31,6 +31,15 @@ export class Identity<A> implements Monad1<URI, A> {
     return new Identity(a)
   }
 
+  /**
+   * A common alias of [[of]]
+   *
+   * @param a Any value to wrap with Identity
+   */
+  static pure<A>(a: A): Identity<A> {
+    return new Identity(a)
+  }
+
   toString(): String {
     return `Identity ${String(this.value)}`
   }
@@ -64,64 +73,60 @@ export class Identity<A> implements Monad1<URI, A> {
 }
 
 /**
- * Create a new Identity object.
- *
- * @category Identity
- * @param a Any value to wrap with Identity.
- */
-const of = <A>(a: A): Identity<A> => {
-  return Identity.of(a)
-}
-
-/**
- * A common alias of [[of]]
- *
- * @category Identity
- */
-const pure = of
-
-/**
- * Apply a function to the value within an Identity.
- *
- * @category Identity
- * @param f A unary function.
- * @param fa An Identity containing the value to which the function will be applied.
- */
-const map = <A, B>(f: (a: A) => B, fa: Identity<A>): Identity<B> => {
-  return fa.map(f)
-}
-
-/**
- * Apply a function wrapped by Identity to the value within another Identity.
- *
- * @category Identity
- * @param fab A unary function wrapped by Identity.
- * @param fa An identity containing the value to which the function will be applied.
- */
-const ap = <A, B>(fab: Identity<(a: A) => B>, fa: Identity<A>): Identity<B> => {
-  return fa.ap(fab)
-}
-
-/**
- * Apply a function which returns Identity without adding structure.
- *
- * @category Identity
- * @param fa A unary function which returns an Identity
- * @param ma An identity containing the value to which the function will be applied.
- */
-const chain = <A, B>(fa: (a: A) => Identity<B>, ma: Identity<A>): Identity<B> => {
-  return ma.chain(fa)
-}
-
-/**
  * The set of static functions which can be applied with Identity
  *
  * @category Identity
  */
 export const identity: MonadS1<URI> = {
-  map,
-  ap,
-  of,
-  pure,
-  chain
+  /**
+   * Apply a function to the value within an Identity.
+   *
+   * @category Identity
+   * @param f A unary function.
+   * @param fa An Identity containing the value to which the function will be applied.
+   */
+  map: <A, B>(f: (a: A) => B, fa: Identity<A>): Identity<B> => {
+    return fa.map(f)
+  },
+
+  /**
+   * Apply a function wrapped by Identity to the value within another Identity.
+   *
+   * @category Identity
+   * @param fab A unary function wrapped by Identity.
+   * @param fa An identity containing the value to which the function will be applied.
+   */
+  ap: <A, B>(fab: Identity<(a: A) => B>, fa: Identity<A>): Identity<B> => {
+    return fa.ap(fab)
+  },
+
+  /**
+   * Create a new Identity object.
+   *
+   * @category Identity
+   * @param a Any value to wrap with Identity.
+   */
+  of: <A>(a: A): Identity<A> => {
+    return Identity.of(a)
+  },
+
+  /**
+   * A common alias of [[of]]
+   *
+   * @category Identity
+   */
+  pure: <A>(a: A): Identity<A> => {
+    return Identity.of(a)
+  },
+
+  /**
+   * Apply a function which returns Identity without adding structure.
+   *
+   * @category Identity
+   * @param fa A unary function which returns an Identity
+   * @param ma An identity containing the value to which the function will be applied.
+   */
+  chain: <A, B>(fa: (a: A) => Identity<B>, ma: Identity<A>): Identity<B> => {
+    return ma.chain(fa)
+  }
 }
