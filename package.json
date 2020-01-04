@@ -24,8 +24,8 @@
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme default --mode file src",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
-    "test:watch": "jest --coverage --watch",
-    "test:prod": "yarn lint && yarn test -- --no-cache",
+    "test.watch": "jest --coverage --watch",
+    "test.prod": "yarn lint && yarn test --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
@@ -48,6 +48,13 @@
     }
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "ignoreCodes": [2345]
+        }
+      }
+    },
     "transform": {
       ".(ts|tsx)": "ts-jest"
     },
@@ -71,7 +78,7 @@
       }
     },
     "collectCoverageFrom": [
-      "src/*.{js,ts}"
+      "src/**/*.{js,ts}"
     ]
   },
   "prettier": {
