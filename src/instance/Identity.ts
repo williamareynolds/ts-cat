@@ -6,8 +6,11 @@ declare module '../HKT' {
   }
 }
 
-export const URI = 'Identity'
-export type URI = typeof URI
+const URI = 'Identity'
+type URI = typeof URI
+
+export const IDENTITY_URI = URI
+export type IdentityURI = URI
 
 /**
  * A simple wrapper around a value which provides no special behavior.
