@@ -75,6 +75,7 @@ export abstract class Maybe<A> implements Monad1<URI, A> {
 
 class Nothing<A> extends Maybe<A> {
   readonly tag: 'Nothing' = 'Nothing'
+  readonly value!: never
 
   toString(): String {
     return this.tag
