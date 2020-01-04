@@ -1,6 +1,6 @@
 {
   "name": "ts-cat",
-  "version": "4.0.0",
+  "version": "0.0.0-development",
   "description": "A fantasy-land and static-land compliant library providing interfaces of common type-classes and instances of them.",
   "keywords": [],
   "main": "dist/ts-cat.umd.js",
