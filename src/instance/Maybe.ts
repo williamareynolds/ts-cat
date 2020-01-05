@@ -51,8 +51,8 @@ export abstract class Maybe<A> implements Monad1<URI, A> {
    * @param a
    */
   static of<A>(a: A): Maybe<A> {
-    if (a === undefined || a === null) return new Nothing()
-    return new Just(a)
+    if (a === undefined || a === null) return new Nothing() as Maybe<NonNullable<A>>
+    return new Just(a) as Maybe<NonNullable<A>>
   }
 
   /**
@@ -82,15 +82,15 @@ class Nothing<A> extends Maybe<A> {
   }
 
   map<B>(f: (a: A) => B): Maybe<B> {
-    return new Nothing()
+    return new Nothing() as Maybe<NonNullable<B>>
   }
 
   ap<B>(fab: Maybe<(a: A) => B>): Maybe<B> {
-    return new Nothing()
+    return new Nothing() as Maybe<NonNullable<B>>
   }
 
   chain<B>(_: (a: A) => Maybe<B>): Maybe<B> {
-    return new Nothing()
+    return new Nothing() as Maybe<NonNullable<B>>
   }
 }
 
@@ -112,7 +112,7 @@ class Just<A> extends Maybe<A> implements Monad1<URI, A> {
   ap<B>(fab: Maybe<(a: A) => B>): Maybe<B> {
     switch (fab.tag) {
       case 'Nothing':
-        return new Nothing()
+        return new Nothing() as Maybe<NonNullable<B>>
       case 'Just':
         return Maybe.of(fab.value(this.value))
     }
