@@ -1,4 +1,5 @@
 import { Monad1, MonadS1 } from '../Monad'
+import { Alt1, AltS1 } from '../Alt'
 
 declare module '../HKT' {
   interface URItoHKT<A> {
@@ -12,7 +13,7 @@ type URI = typeof URI
 export const MAYBE_URI = URI
 export type MaybeURI = URI
 
-export abstract class Maybe<A> implements Monad1<URI, A> {
+export abstract class Maybe<A> implements Monad1<URI, A>, Alt1<URI, A> {
   /** @ignore */
   readonly tag!: 'Just' | 'Nothing'
 
@@ -71,6 +72,13 @@ export abstract class Maybe<A> implements Monad1<URI, A> {
    * @param f A unary function which returns a Maybe
    */
   abstract chain<B>(f: (a: A) => Maybe<B>): Maybe<B>
+
+  /**
+   * If this Maybe is Nothing, provide another Maybe.
+   *
+   * @param fa
+   */
+  abstract alt(fa: Maybe<A>): Maybe<A>
 }
 
 class Nothing<A> extends Maybe<A> {
@@ -92,9 +100,13 @@ class Nothing<A> extends Maybe<A> {
   chain<B>(_: (a: A) => Maybe<B>): Maybe<B> {
     return new Nothing() as Maybe<NonNullable<B>>
   }
+
+  alt(fa: Maybe<A>): Maybe<A> {
+    return fa
+  }
 }
 
-class Just<A> extends Maybe<A> implements Monad1<URI, A> {
+class Just<A> extends Maybe<A> {
   tag: 'Just' = 'Just'
 
   toString(): string {
@@ -121,12 +133,16 @@ class Just<A> extends Maybe<A> implements Monad1<URI, A> {
   chain<B>(f: (a: A) => Maybe<B>): Maybe<B> {
     return f(this.value)
   }
+
+  alt(fa: Maybe<A>): Maybe<A> {
+    return Maybe.of(this.value)
+  }
 }
 
 /**
  * The set of static functions which can be applied with Maybe
  */
-export const maybe: MonadS1<URI> = {
+export const maybe: MonadS1<URI> & AltS1<URI> = {
   /**
    * Apply a function to the value contained in Maybe
    *
@@ -177,5 +193,15 @@ export const maybe: MonadS1<URI> = {
    */
   chain: <A, B>(f: (a: A) => Maybe<B>, ma: Maybe<A>): Maybe<B> => {
     return ma.chain(f)
+  },
+
+  /**
+   * Replace f1 with f2 if f1 is Nothing.
+   *
+   * @param f2
+   * @param f1
+   */
+  alt: <A>(f2: Maybe<A>, f1: Maybe<A>): Maybe<A> => {
+    return f1.alt(f2)
   }
 }

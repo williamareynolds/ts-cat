@@ -1,6 +1,16 @@
 import * as fc from 'fast-check'
 import { Maybe, maybe } from '../src/ts-cat'
 
+const maybeIdentity = (a: number) => a
+const f = (a?: number) => {
+  if (a === undefined) return a
+  return a * 2
+}
+const g = (a: number) => {
+  if (a === undefined) return a
+  return a - 8
+}
+
 const intOrUndefined = fc.frequency(
   {
     weight: 1,
@@ -9,6 +19,17 @@ const intOrUndefined = fc.frequency(
   {
     weight: 20,
     arbitrary: fc.integer()
+  }
+)
+
+const fOrUndefined = fc.frequency(
+  {
+    weight: 1,
+    arbitrary: fc.constant(undefined)
+  },
+  {
+    weight: 1,
+    arbitrary: fc.constant(f)
   }
 )
 
@@ -37,29 +58,19 @@ describe("Maybe's", () => {
     })
   })
 
-  const maybeFn = (a: number) => a
-  const f = (a?: number) => {
-    if (a === undefined) return a
-    return a * 2
-  }
-  const g = (a: number) => {
-    if (a === undefined) return a
-    return a - 8
-  }
-
   describe('instance of functor', () => {
     it('should obey the maybe law', () => {
       fc.assert(
         fc.property(intOrUndefined, int => {
           const m = Maybe.of(int)
-          expect(m.map(maybeFn)).toStrictEqual(m)
+          expect(m.map(maybeIdentity)).toStrictEqual(m)
         })
       )
 
       fc.assert(
         fc.property(intOrUndefined, int => {
           const m = maybe.of(int)
-          expect(maybe.map(maybeFn, m)).toStrictEqual(m)
+          expect(maybe.map(maybeIdentity, m)).toStrictEqual(m)
         })
       )
     })
@@ -85,16 +96,6 @@ describe("Maybe's", () => {
 
   describe('instance of Apply', () => {
     it('should obey the composition law', () => {
-      const fOrUndefined = fc.frequency(
-        {
-          weight: 1,
-          arbitrary: fc.constant(undefined)
-        },
-        {
-          weight: 1,
-          arbitrary: fc.constant(f)
-        }
-      )
       const idG = Maybe.of(g)
 
       fc.assert(
@@ -251,6 +252,52 @@ describe("Maybe's", () => {
           const m = maybe.of(int)
 
           expect(maybe.chain(maybe.of, m)).toStrictEqual(m)
+        })
+      )
+    })
+  })
+
+  describe('instance of Alt', () => {
+    it('should obey the law of associativity', () => {
+      fc.assert(
+        fc.property(intOrUndefined, intOrUndefined, intOrUndefined, (a, b, c) => {
+          const x = Maybe.of(a)
+          const y = Maybe.of(b)
+          const z = Maybe.of(c)
+
+          expect(x.alt(y).alt(z)).toStrictEqual(x.alt(y.alt(z)))
+        })
+      )
+
+      fc.assert(
+        fc.property(intOrUndefined, intOrUndefined, intOrUndefined, (a, b, c) => {
+          const x = maybe.of(a)
+          const y = maybe.of(b)
+          const z = maybe.of(c)
+
+          expect(maybe.alt(maybe.alt(x, y), z)).toStrictEqual(maybe.alt(x, maybe.alt(y, z)))
+        })
+      )
+    })
+
+    it('should obey the law of distributivity', () => {
+      fc.assert(
+        fc.property(intOrUndefined, intOrUndefined, (a, b) => {
+          const x = Maybe.of(a)
+          const y = Maybe.of(b)
+
+          expect(x.alt(y).map(f)).toStrictEqual(x.map(f).alt(y.map(f)))
+        })
+      )
+
+      fc.assert(
+        fc.property(intOrUndefined, intOrUndefined, (a, b) => {
+          const x = maybe.of(a) // 0
+          const y = maybe.of(b) // 1
+
+          expect(maybe.map(maybeIdentity, maybe.alt(y, x))).toStrictEqual(
+            maybe.alt(maybe.map(maybeIdentity, y), maybe.map(maybeIdentity, x))
+          )
         })
       )
     })
