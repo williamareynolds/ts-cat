@@ -20,7 +20,7 @@ export abstract class Maybe<A> implements Monad1<URI, A> {
   readonly value!: A
 
   /** Produce a string representation of the object */
-  abstract toString(): String
+  abstract toString(): string
 
   /**
    * Apply a function to the value contained in Maybe
@@ -77,7 +77,7 @@ class Nothing<A> extends Maybe<A> {
   readonly tag: 'Nothing' = 'Nothing'
   readonly value!: never
 
-  toString(): String {
+  toString(): string {
     return this.tag
   }
 
@@ -97,7 +97,7 @@ class Nothing<A> extends Maybe<A> {
 class Just<A> extends Maybe<A> implements Monad1<URI, A> {
   tag: 'Just' = 'Just'
 
-  toString(): String {
+  toString(): string {
     return `${this.tag} ${String(this.value)}`
   }
 
