@@ -49,6 +49,9 @@
     "{src,test}/**/*.ts": [
       "prettier --write",
       "git add"
+    ],
+    "**/*.md": [
+      "remark ."
     ]
   },
   "config": {
@@ -97,6 +100,9 @@
     "semi": false,
     "singleQuote": true
   },
+  "remarkConfig": {
+    "plugins": ["remark-preset-lint-recommended"]
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -120,6 +126,9 @@
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
     "prompt": "^1.0.0",
+    "remark-cli": "^7.0.1",
+    "remark-lint": "^6.0.5",
+    "remark-preset-lint-recommended": "^3.0.3",
     "replace-in-file": "^3.4.2",
     "rimraf": "^2.6.2",
     "rollup": "^0.67.0",
