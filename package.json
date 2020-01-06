@@ -32,6 +32,8 @@
   },
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint.md": "remark .",
+    "lint.md.fix": "remark . -o",
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme default --mode file src",
     "start": "rollup -c rollup.config.ts -w",
@@ -49,9 +51,6 @@
     "{src,test}/**/*.ts": [
       "prettier --write",
       "git add"
-    ],
-    "**/*.md": [
-      "remark ."
     ]
   },
   "config": {
@@ -151,8 +150,8 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test.prod && npm run build"
+      "pre-commit": "lint-staged && remark . -f",
+      "pre-push": "yarn test.prod && yarn build"
     }
   }
 }

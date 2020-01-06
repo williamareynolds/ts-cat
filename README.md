@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/williamareynolds/ts-cat.svg?branch=master)](https://travis-ci.org/williamareynolds/ts-cat)
 [![Coverage Status](https://coveralls.io/repos/github/williamareynolds/ts-cat/badge.svg?branch=master)](https://coveralls.io/github/williamareynolds/ts-cat?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8a3e86101d4442fb8c6bace12318f09)](https://www.codacy.com/manual/williamareynolds/ts-cat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=williamareynolds/ts-cat&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8a3e86101d4442fb8c6bace12318f09)](https://www.codacy.com/manual/williamareynolds/ts-cat?utm_source=github.com&utm_medium=referral&utm_content=williamareynolds/ts-cat&utm_campaign=Badge_Grade)
 [![npm version](https://badge.fury.io/js/ts-cat.svg)](https://badge.fury.io/js/ts-cat)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
@@ -54,7 +54,11 @@ lose the value of having an interface for the static functions.
 [API Docs][api-doc]
 
 [api-doc]: https://williamareynolds.github.io/ts-cat/
+
 [fantasy-land-doc]: https://github.com/fantasyland/fantasy-land
+
 [static-land-doc]: https://github.com/fantasyland/static-land
+
 [theory-doc]: https://github.com/williamareynolds/ts-cat/wiki
+
 [ts-static-interface]: https://github.com/microsoft/TypeScript/issues/33892
