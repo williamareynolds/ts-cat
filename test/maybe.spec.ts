@@ -3,12 +3,12 @@ import { Maybe, maybe } from '../src/ts-cat'
 
 const maybeIdentity = (a: number) => a
 
-const f = (a?: number) => {
+const f = (a?: number): number | null | undefined => {
   if (a === undefined || a === null) return a
   return a * 2
 }
 
-const g = (a: number) => {
+const g = (a: number): number | null | undefined => {
   if (a === undefined || a === null) return a
   return a - 8
 }
@@ -324,7 +324,7 @@ describe("Maybe's", () => {
           const r = maybe.of(a)
           const s = maybe.of(b)
 
-          expect(maybe.alt(x, maybe.zero(y))).toStrictEqual(x)
+          expect(maybe.alt(r, maybe.zero(s))).toStrictEqual(r)
         })
       )
     })

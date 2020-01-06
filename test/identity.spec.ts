@@ -27,8 +27,8 @@ describe("Identity's", () => {
   })
 
   const identityFn = (a: number) => a
-  const f = (a: number) => a * 2
-  const g = (a: number) => a - 8
+  const f = (a: number): number => a * 2
+  const g = (a: number): number => a - 8
 
   describe('instance of functor', () => {
     it('should obey the identity law', () => {
@@ -107,8 +107,8 @@ describe("Identity's", () => {
 
   describe('instance of Chain', () => {
     it('should obey the associativity law', () => {
-      const mf = (a: number) => identity.of(f(a))
-      const mg = (a: number) => identity.of(g(a))
+      const mf = (a: number): Identity<number> => identity.of(f(a))
+      const mg = (a: number): Identity<number> => identity.of(g(a))
 
       fc.assert(
         fc.property(fc.integer(), int => {
