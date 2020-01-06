@@ -2,25 +2,18 @@ import * as fc from 'fast-check'
 import { Maybe, maybe } from '../src/ts-cat'
 
 const maybeIdentity = (a: number) => a
+
 const f = (a?: number) => {
-  if (a === undefined) return a
+  if (a === undefined || a === null) return a
   return a * 2
 }
+
 const g = (a: number) => {
-  if (a === undefined) return a
+  if (a === undefined || a === null) return a
   return a - 8
 }
 
-const intOrUndefined = fc.frequency(
-  {
-    weight: 1,
-    arbitrary: fc.constant(undefined)
-  },
-  {
-    weight: 20,
-    arbitrary: fc.integer()
-  }
-)
+const intOrUndefined = fc.option(fc.integer(), 3)
 
 const fOrUndefined = fc.frequency(
   {
@@ -28,8 +21,8 @@ const fOrUndefined = fc.frequency(
     arbitrary: fc.constant(undefined)
   },
   {
-    weight: 1,
-    arbitrary: fc.constant(f)
+    weight: 9,
+    arbitrary: fc.func(fc.integer())
   }
 )
 
@@ -59,7 +52,7 @@ describe("Maybe's", () => {
   })
 
   describe('instance of functor', () => {
-    it('should obey the maybe law', () => {
+    it('should obey the identity law', () => {
       fc.assert(
         fc.property(intOrUndefined, int => {
           const m = Maybe.of(int)
@@ -160,7 +153,7 @@ describe("Maybe's", () => {
   })
 
   describe('instance of Applicative', () => {
-    it('should obey the maybe law', () => {
+    it('should obey the identity law', () => {
       fc.assert(
         fc.property(intOrUndefined, int => {
           const m = Maybe.of(int)
@@ -224,7 +217,7 @@ describe("Maybe's", () => {
   describe('instance of Monad', () => {
     const mf = (a: number) => Maybe.of(f(a))
 
-    it('should obey the left maybe law', () => {
+    it('should obey the left identity law', () => {
       fc.assert(
         fc.property(intOrUndefined, int => {
           expect(Maybe.of(int).chain(mf)).toStrictEqual(mf(int))
@@ -298,6 +291,92 @@ describe("Maybe's", () => {
           expect(maybe.map(maybeIdentity, maybe.alt(y, x))).toStrictEqual(
             maybe.alt(maybe.map(maybeIdentity, y), maybe.map(maybeIdentity, x))
           )
+        })
+      )
+    })
+  })
+
+  describe('instance of Plus', () => {
+    it('should obey the law of right identity', () => {
+      fc.assert(
+        fc.property(intOrUndefined, intOrUndefined, (a, b) => {
+          const x = Maybe.of(a)
+          const y = Maybe.of(b)
+
+          expect(x.alt(y.zero())).toStrictEqual(x)
+
+          const r = maybe.of(a)
+          const s = maybe.of(b)
+
+          expect(maybe.alt(y.zero(), x)).toStrictEqual(x)
+        })
+      )
+    })
+
+    it('should obey the law of left identity', () => {
+      fc.assert(
+        fc.property(intOrUndefined, intOrUndefined, (a, b) => {
+          const x = Maybe.of(a)
+          const y = Maybe.of(b)
+
+          expect(y.zero().alt(x)).toStrictEqual(x)
+
+          const r = maybe.of(a)
+          const s = maybe.of(b)
+
+          expect(maybe.alt(x, maybe.zero(y))).toStrictEqual(x)
+        })
+      )
+    })
+
+    it('should obey the law of annihilation', () => {
+      fc.assert(
+        fc.property(intOrUndefined, a => {
+          const x = Maybe.of(a)
+
+          expect(x.zero().map(f)).toStrictEqual(x.zero())
+
+          const r = maybe.of(a)
+
+          expect(maybe.map(f, maybe.zero(x))).toStrictEqual(maybe.zero(x))
+        })
+      )
+    })
+  })
+
+  describe('instance of Alternative', () => {
+    it('should obey the law of distributivity', () => {
+      fc.assert(
+        fc.property(intOrUndefined, fOrUndefined, fOrUndefined, (x, f, g) => {
+          const x1 = Maybe.of(x)
+          const f1 = Maybe.of(f)
+          const g1 = Maybe.of(g)
+
+          expect(x1.ap(f1.alt(g1))).toStrictEqual(x1.ap(f1).alt(x1.ap(g1)))
+
+          const x2 = maybe.of(x)
+          const f2 = maybe.of(f)
+          const g2 = maybe.of(g)
+
+          expect(maybe.ap(maybe.alt(g2, f2), x2)).toStrictEqual(
+            maybe.alt(maybe.ap(g2, x2), maybe.ap(f2, x2))
+          )
+        })
+      )
+    })
+
+    it('should obey the law of annihilation', () => {
+      fc.assert(
+        fc.property(intOrUndefined, fOrUndefined, (x, f) => {
+          const x1 = Maybe.of(x)
+          const f1 = Maybe.of(f)
+
+          expect(x1.ap(f1.zero())).toStrictEqual(f1.zero())
+
+          const x2 = maybe.of(x)
+          const f2 = maybe.of(f)
+
+          expect(maybe.ap(maybe.zero(f2), x2)).toStrictEqual(maybe.zero(f2))
         })
       )
     })
