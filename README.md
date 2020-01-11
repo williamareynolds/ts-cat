@@ -30,8 +30,6 @@ be an issue with typescript, rather than an issue with the implementation. Consi
 demonstration with `Identity<number>`:
 
 ```typescript
-import { identity } from './src/instance/Identity'
-
 const sample = identity.of(5)
 const mapped = identity.map(a => a + 5, sample)
 ```
