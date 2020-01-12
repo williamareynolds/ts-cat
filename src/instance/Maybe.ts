@@ -1,6 +1,4 @@
 import { Monad1, MonadS1 } from '../Monad'
-import { Alt1, AltS1 } from '../Alt'
-import { Plus1, PlusS1 } from '../Plus'
 import { Alternative1, AlternativeS1 } from '../Alternative'
 
 declare module '../HKT' {
